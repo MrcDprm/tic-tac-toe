@@ -1,7 +1,7 @@
 // Arayüz: ayarlar, tahta, 3'lü çizgileri, skor ve bilgisayar hamleleri. Oyun kuralları game.js'te.
 import { createGame, makeMove, otherPlayer, X, O } from './game.js';
 import { chooseMove } from './ai.js';
-import { loadSettings, saveSettings } from './storage.js';
+import { loadSettings, saveSettings, seriesFor, seriesKey } from './storage.js';
 import { translate } from './i18n.js';
 import { applyTheme, nextTheme } from './theme.js';
 
@@ -74,8 +74,7 @@ function scheduleComputer() {
 }
 
 function finishGame() {
-  const key = game.winner ?? 'draws';
-  settings.series[key] += 1;
+  seriesFor(settings)[game.winner ?? 'draws'] += 1;
   saveSettings(settings);
 }
 // ---------- Çizim ----------
@@ -111,7 +110,8 @@ function renderBoard() {
     mark.textContent = value ?? '';
     mark.className = value ? `mark-${value.toLowerCase()}` : '';
     if (index === lastMove) mark.classList.add('placed');
-    cell.disabled = value !== null || locked;
+    // disabled yerine aria-disabled: kilitli hücre odağı kaybetmez, klavyeyle oynayan kişi yerinde kalır
+    cell.setAttribute('aria-disabled', String(value !== null || locked));
     cell.setAttribute('aria-label', t('cell', {
       row: Math.floor(index / game.size) + 1,
       col: (index % game.size) + 1,
@@ -137,13 +137,14 @@ function renderLines() {
 }
 
 function renderScoreboard() {
+  const series = seriesFor(settings);
   for (const player of [X, O]) {
     el.names[player].textContent = playerName(player);
-    el.series[player].textContent = settings.series[player];
+    el.series[player].textContent = series[player];
     el.points[player].textContent = game.mode === 'score' ? t('points', { points: game.scores[player] }) : '';
     el.cards[player].classList.toggle('active', !game.over && game.current === player);
   }
-  el.series.draws.textContent = settings.series.draws;
+  el.series.draws.textContent = series.draws;
 }
 
 function statusText() {
@@ -182,15 +183,14 @@ function renderStatic() {
 
 el.board.addEventListener('click', (event) => {
   const cell = event.target.closest('.cell');
-  if (!cell || cell.disabled) return;
+  if (!cell || cell.getAttribute('aria-disabled') === 'true') return;
   play(Number(cell.dataset.index));
 });
 
-// Ayar değişince yeni seri başlar (skorlar farklı rakip/tahtaya karışmasın)
+// Ayar değişince yeni oyun başlar ve o eşleşmenin kendi skoru görünür (skorlar birbirine karışmaz, silinmez)
 el.settings.addEventListener('change', (event) => {
   const { name, value } = event.target;
   settings[name] = name === 'size' ? Number(value) : value;
-  settings.series = { X: 0, O: 0, draws: 0 };
   saveSettings(settings);
   renderStatic();
   startGame({ alternate: false });
@@ -198,8 +198,9 @@ el.settings.addEventListener('change', (event) => {
 
 el.newGame.addEventListener('click', () => startGame({ alternate: true }));
 
+// Sadece seçili eşleşmenin skoru sıfırlanır
 el.resetScore.addEventListener('click', () => {
-  settings.series = { X: 0, O: 0, draws: 0 };
+  delete settings.scores[seriesKey(settings)];
   saveSettings(settings);
   startGame({ alternate: false });
 });

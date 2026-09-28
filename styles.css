@@ -411,11 +411,11 @@ h1 {
 .cell span {
   position: relative;
 }
-.cell:not(:disabled):hover::before {
+.cell:not([aria-disabled='true']):hover::before {
   border-color: rgb(var(--c-accent) / 0.6);
   background: rgb(var(--c-accent) / 0.06);
 }
-.cell:disabled {
+.cell[aria-disabled='true'] {
   cursor: default;
 }
 .cell:focus-visible {
