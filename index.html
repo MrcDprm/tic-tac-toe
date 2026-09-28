@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tic-Tac-Toe · Miraç Deprem</title>
+    <meta name="description" content="3×3, 4×4 ve 5×5 tahtada iki kişilik ya da bilgisayara karşı Tic-Tac-Toe." />
+    <meta name="theme-color" content="#0b0f15" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="src/theme-init.js"></script>
+    <script type="module" src="src/main.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="https://www.miracdeprem.com" aria-label="www.miracdeprem.com">
+        <span class="brand-logo">md</span>
+        <span class="brand-path">~/tic-tac-toe</span>
+      </a>
+      <div class="topbar-actions">
+        <div class="lang-switch" role="group" data-i18n-aria="language">
+          <button type="button" data-lang="tr">TR</button>
+          <button type="button" data-lang="en">EN</button>
+        </div>
+        <button type="button" class="icon-button" id="theme-toggle" data-i18n-aria="toggleTheme">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="intro">
+        <h1>Tic-Tac-Toe</h1>
+        <p class="tagline" data-i18n="tagline"></p>
+      </section>
+
+      <div class="game">
+        <form class="settings" id="settings">
+          <fieldset class="segmented">
+            <legend data-i18n="board"></legend>
+            <label><input type="radio" name="size" value="3" /><span>3×3</span></label>
+            <label><input type="radio" name="size" value="4" /><span>4×4</span></label>
+            <label><input type="radio" name="size" value="5" /><span>5×5</span></label>
+          </fieldset>
+          <fieldset class="segmented">
+            <legend data-i18n="opponent"></legend>
+            <label><input type="radio" name="opponent" value="computer" /><span data-i18n="computer"></span></label>
+            <label><input type="radio" name="opponent" value="human" /><span data-i18n="twoPlayers"></span></label>
+          </fieldset>
+          <fieldset class="segmented" id="level-group">
+            <legend data-i18n="level"></legend>
+            <label><input type="radio" name="level" value="easy" /><span data-i18n="easy"></span></label>
+            <label><input type="radio" name="level" value="medium" /><span data-i18n="medium"></span></label>
+            <label><input type="radio" name="level" value="hard" /><span data-i18n="hard"></span></label>
+          </fieldset>
+        </form>
+
+        <p class="rules" id="rules"></p>
+
+        <section class="scoreboard" aria-live="off">
+          <div class="score-card" data-player="X">
+            <span class="score-mark mark-x">X</span>
+            <span class="score-name" id="name-x"></span>
+            <strong class="score-value" id="series-x">0</strong>
+            <span class="score-points" id="points-x"></span>
+          </div>
+          <div class="score-card score-draws">
+            <span class="score-name" data-i18n="draws"></span>
+            <strong class="score-value" id="series-draws">0</strong>
+          </div>
+          <div class="score-card" data-player="O">
+            <span class="score-mark mark-o">O</span>
+            <span class="score-name" id="name-o"></span>
+            <strong class="score-value" id="series-o">0</strong>
+            <span class="score-points" id="points-o"></span>
+          </div>
+        </section>
+
+        <div class="board-wrap">
+          <div class="board" id="board" role="group" data-i18n-aria="gameBoard"></div>
+          <svg class="lines" id="lines" aria-hidden="true"></svg>
+        </div>
+
+        <p class="status" id="status" role="status"></p>
+
+        <div class="actions">
+          <button type="button" class="btn btn-primary" id="new-game" data-i18n="newGame"></button>
+          <button type="button" class="btn btn-ghost" id="reset-score" data-i18n="resetScore"></button>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <span>© 2026 Miraç Deprem</span>
+      <a href="https://www.miracdeprem.com" data-i18n="portfolio"></a>
+      <a href="https://github.com/MrcDprm/tic-tac-toe" data-i18n="source"></a>
+    </footer>
+
+    <noscript><p class="noscript">Bu oyun JavaScript gerektirir. · This game requires JavaScript.</p></noscript>
+  </body>
+</html>
