@@ -3,6 +3,7 @@ import { createGame, makeMove, otherPlayer, X, O } from './game.js';
 import { chooseMove } from './ai.js';
 import { loadSettings, saveSettings } from './storage.js';
 import { translate } from './i18n.js';
+import { applyTheme, nextTheme } from './theme.js';
 
 const COMPUTER_DELAY_MS = 450; // bilgisayar anında oynamasın, hamle gözle takip edilebilsin
 const HUMAN = X; // bilgisayara karşı oyuncu X, bilgisayar O
@@ -177,10 +178,6 @@ function renderStatic() {
   el.rules.textContent = t(settings.size === 3 ? 'rulesClassic' : 'rulesScore');
 }
 
-function applyTheme() {
-  document.documentElement.dataset.theme = settings.theme;
-  document.querySelector('meta[name="theme-color"]').content = settings.theme === 'light' ? '#dee4ec' : '#0b0f15';
-}
 // ---------- Olaylar ----------
 
 el.board.addEventListener('click', (event) => {
@@ -217,11 +214,11 @@ for (const button of el.langButtons) {
 }
 
 el.themeToggle.addEventListener('click', () => {
-  settings.theme = settings.theme === 'dark' ? 'light' : 'dark';
+  settings.theme = nextTheme(settings.theme);
   saveSettings(settings);
-  applyTheme();
+  applyTheme(settings.theme);
 });
 
-applyTheme();
+applyTheme(settings.theme);
 renderStatic();
 startGame({ alternate: false });
