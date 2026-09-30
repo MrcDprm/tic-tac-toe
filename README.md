@@ -28,6 +28,7 @@ A tic-tac-toe game in plain HTML, CSS and JavaScript. Play the classic 3×3 game
   - Screen-reader labels for every cell.
   - Live announcements of turns and results.
   - Respects the "reduce motion" system setting.
+- **An address for every mode:** [/bilgisayara-karsi](https://tictactoe.miracdeprem.com/bilgisayara-karsi), [/iki-kisilik](https://tictactoe.miracdeprem.com/iki-kisilik), [/zor-seviye](https://tictactoe.miracdeprem.com/zor-seviye), [/4x4](https://tictactoe.miracdeprem.com/4x4) and [/5x5](https://tictactoe.miracdeprem.com/5x5) open the game in that mode, in Turkish or English (`?lang=en`).
 - **Turkish and English**, with a **dark and light theme** that match my [portfolio](https://www.miracdeprem.com).
 - **Responsive:** two columns on desktop, a single column on phones.
 - **Feedback:** a small button opens a form (name optional, email or phone, message) that sends straight to me through my portfolio site.
@@ -51,10 +52,10 @@ Play it online at [tictactoe.miracdeprem.com](https://tictactoe.miracdeprem.com)
 ```bash
 git clone https://github.com/MrcDprm/tic-tac-toe.git
 cd tic-tac-toe
-python -m http.server 5173
+npm run dev
 ```
 
-Then open `http://localhost:5173`. ES modules do not load from `file://`, so a local server is needed. Any static server works.
+Then open `http://localhost:5176`. The small development server (Node.js 20 or newer) serves the files, adds the same security headers as the live site and answers addresses like `/5x5` the way Vercel does.
 
 Run the tests (Node.js 20 or newer):
 

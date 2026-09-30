@@ -28,6 +28,7 @@ Sade HTML, CSS ve JavaScript ile yazılmış bir XOX (tic-tac-toe) oyunu. Klasik
   - Her hücrenin ekran okuyucu etiketi vardır.
   - Sıra ve sonuç sesli duyurulur.
   - Sistemdeki "hareketi azalt" ayarına uyar.
+- **Her modun kendi adresi:** [/bilgisayara-karsi](https://tictactoe.miracdeprem.com/bilgisayara-karsi), [/iki-kisilik](https://tictactoe.miracdeprem.com/iki-kisilik), [/zor-seviye](https://tictactoe.miracdeprem.com/zor-seviye), [/4x4](https://tictactoe.miracdeprem.com/4x4) ve [/5x5](https://tictactoe.miracdeprem.com/5x5) oyunu o modda açar; Türkçe ya da İngilizce (`?lang=en`).
 - **Türkçe ve İngilizce**, [portfolyo sitemle](https://www.miracdeprem.com) uyumlu **koyu ve açık tema**.
 - **Duyarlı tasarım:** Masaüstünde iki sütun, telefonda tek sütun.
 - **Geri bildirim:** Küçük bir düğme; ad (isteğe bağlı), e-posta ya da telefon ve mesaj içeren formu açar. Mesaj portfolyo sitem üzerinden doğrudan bana ulaşır.
@@ -51,10 +52,10 @@ Sade HTML, CSS ve JavaScript ile yazılmış bir XOX (tic-tac-toe) oyunu. Klasik
 ```bash
 git clone https://github.com/MrcDprm/tic-tac-toe.git
 cd tic-tac-toe
-python -m http.server 5173
+npm run dev
 ```
 
-Sonra `http://localhost:5173` adresini aç. ES modülleri `file://` üzerinden yüklenmediği için yerel bir sunucu gerekir; herhangi bir statik sunucu olur.
+Sonra `http://localhost:5176` adresini aç. Küçük geliştirme sunucusu (Node.js 20 veya üstü) dosyaları sunar, canlı sitedeki güvenlik başlıklarını ekler ve `/5x5` gibi adresleri Vercel'deki gibi karşılar.
 
 Testleri çalıştırmak için (Node.js 20 veya üstü):
 
