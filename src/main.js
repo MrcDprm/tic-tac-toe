@@ -5,6 +5,7 @@ import { loadSettings, saveSettings, seriesFor, seriesKey } from './storage.js';
 import { translate } from './i18n.js';
 import { applyTheme, nextTheme } from './theme.js';
 import { initFeedback } from './feedback.js';
+import { MODES, modeForSettings, modeFromPath, pageMeta, pathFor } from './routes.js';
 
 const COMPUTER_DELAY_MS = 450; // bilgisayar anında oynamasın, hamle gözle takip edilebilsin
 const HUMAN = X; // bilgisayara karşı oyuncu X, bilgisayar O
@@ -12,6 +13,14 @@ const SVG_NS = 'http://www.w3.org/2000/svg';
 
 const browserLang = navigator.language?.toLowerCase().startsWith('tr') ? 'tr' : 'en';
 const settings = loadSettings(undefined, browserLang);
+// Adresteki ?lang=en / ?lang=tr kayıtlı tercihten önce gelir (paylaşılan ve Google'dan gelen linkler)
+const urlLang = new URLSearchParams(window.location.search).get('lang');
+if (urlLang === 'tr' || urlLang === 'en') settings.lang = urlLang;
+// /5x5 gibi bir adresle gelindiyse o mod açılır
+const routeMode = modeFromPath(window.location.pathname);
+if (routeMode) Object.assign(settings, MODES[routeMode]);
+// Adreste görünen mod: ana adresle gelindiyse oyuncu bir ayar değiştirene kadar boş kalır
+let addressMode = routeMode;
 
 const el = {
   settings: document.getElementById('settings'),
@@ -165,10 +174,22 @@ function statusText() {
   return t('wins', { name: playerName(game.winner) }) + final;
 }
 
+/**
+ * Adres (/5x5) ve sekme başlığı güncellenir. replaceState geçmişe kayıt eklemez;
+ * geri tuşunun davranışı değişmez.
+ */
+function updateAddress() {
+  const target = `${pathFor(addressMode)}${settings.lang === 'en' ? '?lang=en' : ''}`;
+  if (`${window.location.pathname}${window.location.search}` !== target) window.history.replaceState(null, '', target);
+  const meta = pageMeta(addressMode, settings.lang);
+  document.title = meta.title;
+  document.querySelector('meta[name="description"]')?.setAttribute('content', meta.description);
+}
+
 /** Dil değişince sabit metinler (data-i18n) ve ayar düğmeleri güncellenir. */
 function renderStatic() {
   document.documentElement.lang = settings.lang;
-  document.title = t('pageTitle');
+  updateAddress();
   for (const node of document.querySelectorAll('[data-i18n]')) node.textContent = t(node.dataset.i18n);
   for (const node of document.querySelectorAll('[data-i18n-aria]')) node.setAttribute('aria-label', t(node.dataset.i18nAria));
   for (const button of el.langButtons) button.setAttribute('aria-pressed', String(button.dataset.lang === settings.lang));
@@ -193,6 +214,7 @@ el.settings.addEventListener('change', (event) => {
   const { name, value } = event.target;
   settings[name] = name === 'size' ? Number(value) : value;
   saveSettings(settings);
+  addressMode = modeForSettings(settings);
   renderStatic();
   startGame({ alternate: false });
 });

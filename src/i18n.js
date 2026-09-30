@@ -1,7 +1,6 @@
 // Arayüz metinleri (Türkçe / İngilizce). {name} yer tutucuları çağrılırken doldurulur.
 export const MESSAGES = {
   tr: {
-    pageTitle: 'Tic-Tac-Toe · Miraç Deprem',
     tagline: 'Klasik 3×3 ya da tahta dolana kadar 3\'lü yapıp puan topla.',
     board: 'Tahta',
     opponent: 'Rakip',
@@ -53,7 +52,6 @@ export const MESSAGES = {
     jsProjects: 'JS projeleri',
   },
   en: {
-    pageTitle: 'Tic-Tac-Toe · Miraç Deprem',
     tagline: 'Classic 3×3, or keep making three in a row until the board fills up.',
     board: 'Board',
     opponent: 'Opponent',
