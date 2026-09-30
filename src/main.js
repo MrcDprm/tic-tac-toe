@@ -4,6 +4,7 @@ import { chooseMove } from './ai.js';
 import { loadSettings, saveSettings, seriesFor, seriesKey } from './storage.js';
 import { translate } from './i18n.js';
 import { applyTheme, nextTheme } from './theme.js';
+import { initFeedback } from './feedback.js';
 
 const COMPUTER_DELAY_MS = 450; // bilgisayar anında oynamasın, hamle gözle takip edilebilsin
 const HUMAN = X; // bilgisayara karşı oyuncu X, bilgisayar O
@@ -223,3 +224,4 @@ el.themeToggle.addEventListener('click', () => {
 applyTheme(settings.theme);
 renderStatic();
 startGame({ alternate: false });
+initFeedback(t);
