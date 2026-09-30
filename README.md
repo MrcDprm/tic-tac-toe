@@ -30,6 +30,7 @@ A tic-tac-toe game in plain HTML, CSS and JavaScript. Play the classic 3×3 game
   - Respects the "reduce motion" system setting.
 - **Turkish and English**, with a **dark and light theme** that match my [portfolio](https://www.miracdeprem.com).
 - **Responsive:** two columns on desktop, a single column on phones.
+- **Feedback:** a small button opens a form (name optional, email or phone, message) that sends straight to me through my portfolio site.
 
 ## Screenshots
 
