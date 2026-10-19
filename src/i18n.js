@@ -50,6 +50,7 @@ export const MESSAGES = {
     feedbackTooMany: 'Çok hızlı gönderildi. Bir dakika sonra tekrar dene.',
     feedbackFailed: 'Gönderilemedi. Biraz sonra tekrar dene.',
     jsProjects: 'Projelerim',
+    otherProjects: 'Diğer projelerim',
   },
   en: {
     tagline: 'Classic 3×3, or keep making three in a row until the board fills up.',
@@ -101,6 +102,7 @@ export const MESSAGES = {
     feedbackTooMany: 'Too many messages. Try again in a minute.',
     feedbackFailed: 'Could not send. Please try again later.',
     jsProjects: 'My projects',
+    otherProjects: 'My other projects',
   },
 };
 
