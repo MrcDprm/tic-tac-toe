@@ -88,12 +88,6 @@ tests/             Kurallar, yapay zekâ ve kayıt için birim testleri
 - **SVG ile çizim.** Puan getiren çizgiler tahtanın üstündeki SVG çizgileri. SVG koordinatlarını hücre başına 1 birim yapınca hesap basitleşti: bir hücrenin merkezi sadece `sütun + 0.5, satır + 0.5`.
 - **Erişilebilirlik ayrıntıları.** `disabled` ile `aria-disabled` arasındaki farkı öğrendim: `disabled` olan buton klavye odağını kaybediyor. Oyuncunun tahtadaki yerini korumak için `aria-disabled` kullandım.
 
-## Gelecek Planları
-
-- Bilgisayara karşı O olarak oynamayı seçebilmek
-- Son hamleyi geri alma
-- İsteğe bağlı ses efektleri
-
 ## Lisans
 
 [MIT](LICENSE)
