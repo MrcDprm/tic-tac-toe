@@ -88,12 +88,6 @@ tests/             Unit tests for rules, AI and storage
 - **Drawing with SVG.** Scored lines are SVG lines on top of the board. Setting the SVG coordinates to one unit per cell made the math simple: the center of a cell is just `column + 0.5, row + 0.5`.
 - **Accessibility details.** I learned the difference between `disabled` and `aria-disabled`: a disabled button loses keyboard focus, so I used `aria-disabled` to keep the player's place on the board.
 
-## Future Plans
-
-- Choose to play as O against the computer
-- Undo the last move
-- Optional sound effects
-
 ## License
 
 [MIT](LICENSE)
