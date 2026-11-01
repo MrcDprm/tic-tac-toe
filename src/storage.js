@@ -57,7 +57,7 @@ export function loadSettings(storage = browserStorage(), fallbackLang = 'tr') {
     opponent: oneOf(saved.opponent, OPPONENTS, 'computer'),
     level: oneOf(saved.level, LEVELS, 'medium'),
     lang: oneOf(saved.lang, LANGUAGES, fallbackLang),
-    theme: oneOf(saved.theme, THEMES, 'dark'),
+    theme: oneOf(saved.theme, THEMES, 'light'),
     // Sadece bilinen eşleşme adları alınır; kayıttaki başka anahtarlar yok sayılır
     scores: Object.fromEntries(
       SERIES_KEYS.filter((key) => scores[key] != null).map((key) => [key, readSeries(scores[key])]),

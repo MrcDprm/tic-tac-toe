@@ -6,10 +6,12 @@ import { translate } from './i18n.js';
 import { applyTheme, nextTheme } from './theme.js';
 import { initFeedback } from './feedback.js';
 import { MODES, modeForSettings, modeFromPath, pageMeta, pathFor } from './routes.js';
+import { CELL, gridPaths, markPaths, seededRandom, tallyPath, wobblyLine } from './sketch.js';
 
 const COMPUTER_DELAY_MS = 450; // bilgisayar anında oynamasın, hamle gözle takip edilebilsin
 const HUMAN = X; // bilgisayara karşı oyuncu X, bilgisayar O
 const SVG_NS = 'http://www.w3.org/2000/svg';
+const RING_PATH = 'M12 8C40-2 88 0 96 16 102 34 44 42 14 36-8 30 0 8 34 4'; // seçili ayarın halkası
 
 const browserLang = navigator.language?.toLowerCase().startsWith('tr') ? 'tr' : 'en';
 const settings = loadSettings(undefined, browserLang);
@@ -28,6 +30,7 @@ const el = {
   rules: document.getElementById('rules'),
   board: document.getElementById('board'),
   lines: document.getElementById('lines'),
+  gridLines: document.getElementById('grid-lines'),
   status: document.getElementById('status'),
   newGame: document.getElementById('new-game'),
   resetScore: document.getElementById('reset-score'),
@@ -37,6 +40,7 @@ const el = {
   names: { X: document.getElementById('name-x'), O: document.getElementById('name-o') },
   series: { X: document.getElementById('series-x'), O: document.getElementById('series-o'), draws: document.getElementById('series-draws') },
   points: { X: document.getElementById('points-x'), O: document.getElementById('points-o') },
+  tally: { X: document.getElementById('tally-x'), O: document.getElementById('tally-o'), draws: document.getElementById('tally-draws') },
 };
 
 let game;
@@ -44,6 +48,7 @@ let firstPlayer = X;
 let lastMove = null;
 let lastScored = 0;
 let computerTimer = null;
+let gameNumber = 0; // her oyunda işaretler biraz farklı çizilsin diye tohuma katılır
 
 const t = (key, params) => translate(settings.lang, key, params);
 const isComputerTurn = () => settings.opponent === 'computer' && !game.over && game.current !== HUMAN;
@@ -60,6 +65,7 @@ function startGame({ alternate }) {
   clearTimeout(computerTimer);
   firstPlayer = alternate ? otherPlayer(firstPlayer) : X;
   game = createGame(settings.size, firstPlayer);
+  gameNumber += 1;
   lastMove = null;
   lastScored = 0;
   el.lines.replaceChildren();
@@ -89,6 +95,22 @@ function finishGame() {
 }
 // ---------- Çizim ----------
 
+function svgElement(name, attributes = {}) {
+  const node = document.createElementNS(SVG_NS, name);
+  for (const [key, value] of Object.entries(attributes)) node.setAttribute(key, value);
+  return node;
+}
+
+/** pathLength=1: çizim animasyonu her yolun gerçek uzunluğunu bilmeden çalışır. */
+const pathElement = (d, attributes = {}) => svgElement('path', { d, pathLength: 1, ...attributes });
+
+function drawMark(value, index) {
+  const rng = seededRandom(gameNumber * 1000 + index);
+  const svg = svgElement('svg', { class: 'mark placed', viewBox: `0 0 ${CELL} ${CELL}`, 'aria-hidden': 'true' });
+  svg.append(...markPaths(value, rng).map((d) => pathElement(d)));
+  return svg;
+}
+
 function render() {
   renderBoard();
   renderLines();
@@ -101,6 +123,8 @@ function renderBoard() {
   if (el.board.children.length !== cellCount) {
     el.board.style.setProperty('--size', game.size);
     el.board.parentElement.style.setProperty('--size', game.size);
+    el.gridLines.setAttribute('viewBox', `0 0 ${game.size * CELL} ${game.size * CELL}`);
+    el.gridLines.replaceChildren(...gridPaths(game.size, seededRandom(game.size)).map((d) => pathElement(d)));
     el.board.replaceChildren(
       ...Array.from({ length: cellCount }, (_, index) => {
         const cell = document.createElement('button');
@@ -117,9 +141,12 @@ function renderBoard() {
   game.board.forEach((value, index) => {
     const cell = el.board.children[index];
     const mark = cell.firstChild;
-    mark.textContent = value ?? '';
-    mark.className = value ? `mark-${value.toLowerCase()}` : '';
-    if (index === lastMove) mark.classList.add('placed');
+    // İşaret yalnızca değişince çizilir; ekran yenilendi diye şekli ya da animasyonu tekrarlanmaz
+    if ((mark.dataset.value ?? '') !== (value ?? '')) {
+      mark.dataset.value = value ?? '';
+      mark.className = value ? `mark-${value.toLowerCase()}` : '';
+      mark.replaceChildren(...(value ? [drawMark(value, index)] : []));
+    }
     // disabled yerine aria-disabled: kilitli hücre odağı kaybetmez, klavyeyle oynayan kişi yerinde kalır
     cell.setAttribute('aria-disabled', String(value !== null || locked));
     cell.setAttribute('aria-label', t('cell', {
@@ -130,31 +157,47 @@ function renderBoard() {
   });
 }
 
-/** Yeni 3'lüler SVG çizgisi olarak eklenir; eskiler yerinde kalır. Koordinat birimi = 1 hücre. */
+/** Yeni 3'lüler elle çekilmiş çizgi olarak eklenir; eskiler yerinde kalır. */
 function renderLines() {
-  el.lines.setAttribute('viewBox', `0 0 ${game.size} ${game.size}`);
-  const center = (cell) => [(cell % game.size) + 0.5, Math.floor(cell / game.size) + 0.5];
+  const full = game.size * CELL;
+  el.lines.setAttribute('viewBox', `0 0 ${full} ${full}`);
+  el.lines.classList.toggle('classic', game.mode !== 'score');
+  const center = (cell) => [((cell % game.size) + 0.5) * CELL, (Math.floor(cell / game.size) + 0.5) * CELL];
 
   for (const line of el.lines.querySelectorAll('.new')) line.classList.remove('new');
   for (const { player, cells } of game.lines.slice(el.lines.children.length)) {
     const [x1, y1] = center(cells[0]);
     const [x2, y2] = center(cells[cells.length - 1]);
-    const svgLine = document.createElementNS(SVG_NS, 'line');
-    for (const [name, value] of Object.entries({ x1, y1, x2, y2 })) svgLine.setAttribute(name, value);
-    svgLine.setAttribute('class', `line-${player.toLowerCase()} new`);
-    el.lines.append(svgLine);
+    // Çizgi ilk ve son işaretin biraz dışına taşar
+    const reachX = ((x2 - x1) / (cells.length - 1)) * 0.36;
+    const reachY = ((y2 - y1) / (cells.length - 1)) * 0.36;
+    const rng = seededRandom(gameNumber * 7 + el.lines.children.length);
+    const d = wobblyLine(x1 - reachX, y1 - reachY, x2 + reachX, y2 + reachY, rng, 5);
+    el.lines.append(pathElement(d, { class: `line-${player.toLowerCase()} new` }));
   }
+}
+
+function renderTally(svg, count) {
+  const tally = tallyPath(count, seededRandom(count + 1));
+  const visible = Boolean(tally?.d);
+  svg.replaceChildren(...(visible ? [svgElement('path', { d: tally.d })] : []));
+  svg.setAttribute('viewBox', visible ? `0 0 ${tally.width} ${tally.height}` : '0 0 1 1');
+  svg.setAttribute('width', visible ? tally.width : 0);
+  svg.setAttribute('height', visible ? tally.height : 0);
 }
 
 function renderScoreboard() {
   const series = seriesFor(settings);
   for (const player of [X, O]) {
-    el.names[player].textContent = playerName(player);
+    // "Oyuncu X" adında işaret zaten var; bilgisayara karşı "Sen (X)" yazılır
+    el.names[player].textContent = settings.opponent === 'computer' ? `${playerName(player)} (${player})` : playerName(player);
     el.series[player].textContent = series[player];
+    renderTally(el.tally[player], series[player]);
     el.points[player].textContent = game.mode === 'score' ? t('points', { points: game.scores[player] }) : '';
     el.cards[player].classList.toggle('active', !game.over && game.current === player);
   }
   el.series.draws.textContent = series.draws;
+  renderTally(el.tally.draws, series.draws);
 }
 
 function statusText() {
@@ -186,6 +229,19 @@ function updateAddress() {
   document.querySelector('meta[name="description"]')?.setAttribute('content', meta.description);
 }
 
+/**
+ * Her ayar seçeneğine kalem halkası eklenir; yalnızca seçili olanda görünür (styles.css).
+ * Metin güncellenince span'ın içi yenilendiği için renderStatic her seferinde çağırır.
+ */
+function addRings() {
+  for (const option of el.settings.querySelectorAll('.segmented span')) {
+    if (option.querySelector('.ring')) continue;
+    const ring = svgElement('svg', { class: 'ring', viewBox: '0 0 100 40', preserveAspectRatio: 'none', 'aria-hidden': 'true' });
+    ring.append(svgElement('path', { d: RING_PATH, 'vector-effect': 'non-scaling-stroke' }));
+    option.append(ring);
+  }
+}
+
 /** Dil değişince sabit metinler (data-i18n) ve ayar düğmeleri güncellenir. */
 function renderStatic() {
   document.documentElement.lang = settings.lang;
@@ -198,6 +254,9 @@ function renderStatic() {
     el.settings.elements[name].value = String(settings[name]);
   }
   el.levelGroup.hidden = settings.opponent !== 'computer';
+  addRings();
+  el.themeToggle.textContent = t(settings.theme === 'dark' ? 'themeNotebook' : 'themeChalkboard');
+  el.themeToggle.setAttribute('aria-label', t('toggleTheme'));
   el.rules.textContent = t(settings.size === 3 ? 'rulesClassic' : 'rulesScore');
 }
 
@@ -241,6 +300,7 @@ el.themeToggle.addEventListener('click', () => {
   settings.theme = nextTheme(settings.theme);
   saveSettings(settings);
   applyTheme(settings.theme);
+  renderStatic();
 });
 
 applyTheme(settings.theme);
