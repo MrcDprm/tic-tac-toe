@@ -515,16 +515,8 @@ h1 {
   font-size: 0.875rem;
   text-align: center;
 }
-.footer-projects,
-.footer-meta {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.25rem 1rem;
-}
-.footer-meta a {
-  color: var(--ink-soft);
-  font-weight: 400;
+.footer-owner {
+  margin: 0;
 }
 .noscript {
   text-align: center;

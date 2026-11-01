@@ -303,6 +303,7 @@ el.themeToggle.addEventListener('click', () => {
   renderStatic();
 });
 
+document.getElementById('footer-year').textContent = new Date().getFullYear();
 applyTheme(settings.theme);
 renderStatic();
 startGame({ alternate: false });
