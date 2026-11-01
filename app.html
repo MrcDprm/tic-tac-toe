@@ -8,49 +8,42 @@
     <title>Tic-Tac-Toe · Miraç Deprem</title>
     <meta name="robots" content="noindex" />
     <!-- /seo -->
-    <meta name="theme-color" content="#0b0f15" />
+    <meta name="theme-color" content="#f8fafc" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
-    />
     <link rel="stylesheet" href="/styles.css" />
     <script src="/src/theme-init.js"></script>
     <script type="module" src="/src/main.js"></script>
     <script defer src="https://nabiz.miracdeprem.com/js/nabiz.js" data-site="tictactoe.miracdeprem.com"></script>
   </head>
   <body>
+    <svg class="svg-defs" aria-hidden="true">
+      <!-- Tebeşir dokusu: çizginin kenarını bozar, içinde küçük boşluklar açar -->
+      <filter id="chalk" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="noise" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" result="rough" />
+        <feComponentTransfer in="noise" result="gaps">
+          <feFuncA type="discrete" tableValues="1 1 1 1 0 1 1" />
+        </feComponentTransfer>
+        <feComposite in="rough" in2="gaps" operator="in" />
+      </filter>
+    </svg>
+
     <header class="topbar">
-      <a class="brand" href="https://www.miracdeprem.com" aria-label="www.miracdeprem.com">
-        <span class="brand-logo">md</span>
-        <span class="brand-path">~/tic-tac-toe</span>
-      </a>
+      <div class="intro">
+        <h1>Tic-Tac-Toe</h1>
+        <p class="tagline" data-i18n="tagline"></p>
+      </div>
       <div class="topbar-actions">
         <div class="lang-switch" role="group" data-i18n-aria="language">
           <button type="button" data-lang="tr">TR</button>
           <button type="button" data-lang="en">EN</button>
         </div>
-        <button type="button" class="icon-button" id="theme-toggle" data-i18n-aria="toggleTheme">
-          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="12" cy="12" r="4" />
-            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
-          </svg>
-          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
-          </svg>
-        </button>
+        <button type="button" class="theme-button" id="theme-toggle"></button>
       </div>
     </header>
 
     <main class="page">
-      <section class="intro">
-        <h1>Tic-Tac-Toe</h1>
-        <p class="tagline" data-i18n="tagline"></p>
-      </section>
-
       <div class="game">
         <form class="settings" id="settings">
           <fieldset class="segmented">
@@ -76,24 +69,32 @@
 
         <section class="scoreboard" aria-live="off">
           <div class="score-card" data-player="X">
-            <span class="score-mark mark-x">X</span>
-            <span class="score-name" id="name-x"></span>
-            <strong class="score-value" id="series-x">0</strong>
+            <div class="score-head mark-x"><span class="score-name" id="name-x"></span></div>
+            <div class="score-tally-row mark-x">
+              <svg class="tally" id="tally-x" aria-hidden="true"></svg>
+              <strong class="score-value" id="series-x">0</strong>
+            </div>
             <span class="score-points" id="points-x"></span>
           </div>
-          <div class="score-card score-draws">
-            <span class="score-name" data-i18n="draws"></span>
-            <strong class="score-value" id="series-draws">0</strong>
-          </div>
           <div class="score-card" data-player="O">
-            <span class="score-mark mark-o">O</span>
-            <span class="score-name" id="name-o"></span>
-            <strong class="score-value" id="series-o">0</strong>
+            <div class="score-head mark-o"><span class="score-name" id="name-o"></span></div>
+            <div class="score-tally-row mark-o">
+              <svg class="tally" id="tally-o" aria-hidden="true"></svg>
+              <strong class="score-value" id="series-o">0</strong>
+            </div>
             <span class="score-points" id="points-o"></span>
+          </div>
+          <div class="score-card score-draws">
+            <div class="score-head"><span class="score-name" data-i18n="draws"></span></div>
+            <div class="score-tally-row">
+              <svg class="tally" id="tally-draws" aria-hidden="true"></svg>
+              <strong class="score-value" id="series-draws">0</strong>
+            </div>
           </div>
         </section>
 
         <div class="board-wrap">
+          <svg class="grid-lines" id="grid-lines" aria-hidden="true"></svg>
           <div class="board" id="board" role="group" data-i18n-aria="gameBoard"></div>
           <svg class="lines" id="lines" aria-hidden="true"></svg>
         </div>

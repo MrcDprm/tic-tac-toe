@@ -29,20 +29,21 @@ Sade HTML, CSS ve JavaScript ile yazılmış bir XOX (tic-tac-toe) oyunu. Klasik
   - Sıra ve sonuç sesli duyurulur.
   - Sistemdeki "hareketi azalt" ayarına uyar.
 - **Her modun kendi adresi:** [/bilgisayara-karsi](https://tictactoe.miracdeprem.com/bilgisayara-karsi), [/iki-kisilik](https://tictactoe.miracdeprem.com/iki-kisilik), [/zor-seviye](https://tictactoe.miracdeprem.com/zor-seviye), [/4x4](https://tictactoe.miracdeprem.com/4x4) ve [/5x5](https://tictactoe.miracdeprem.com/5x5) oyunu o modda açar; Türkçe ya da İngilizce (`?lang=en`).
-- **Türkçe ve İngilizce**, [portfolyo sitemle](https://www.miracdeprem.com) uyumlu **koyu ve açık tema**.
-- **Duyarlı tasarım:** Masaüstünde iki sütun, telefonda tek sütun.
+- **Türkçe ve İngilizce**, iki görünüm: **kareli defter ve tükenmez kalem** ya da **kara tahta ve tebeşir**.
+- **El çizimi:** Tahta, X ve O, kazanan çizgi ve skordaki çetele elle çizilmiş gibi görünen SVG yolları; her işaret kalemle çiziliyormuş gibi oluşur.
+- **Duyarlı tasarım:** Masaüstünde üç sütun, telefonda tek sütun.
 - **Geri bildirim:** Küçük bir düğme; ad (isteğe bağlı), e-posta ya da telefon ve mesaj içeren formu açar. Mesaj portfolyo sitem üzerinden doğrudan bana ulaşır.
 
 ## Ekran Görüntüleri
 
-| 4×4 puan modu | Açık tema, 5×5 | Telefon |
+| 4×4 puan modu | Kara tahta, 5×5 | Telefon |
 |---|---|---|
-| ![Çizgileri çizilmiş 4×4 tahta](docs/screenshot-scoring.png) | ![Türkçe arayüz, açık tema, 5×5 tahta](docs/screenshot-light.png) | ![Telefon görünümü](docs/screenshot-mobile.png) |
+| ![Çizgileri çizilmiş 4×4 tahta](docs/screenshot-scoring.png) | ![Türkçe arayüz, kara tahta, 5×5 tahta](docs/screenshot-chalkboard.png) | ![Telefon görünümü](docs/screenshot-mobile.png) |
 
 ## Kullanılan Teknolojiler
 
 - HTML, CSS, JavaScript (ES modülleri, framework yok, derleme adımı yok)
-- Node.js'in yerleşik test aracı (`node --test`), 22 birim testi
+- Node.js'in yerleşik test aracı (`node --test`), 42 birim testi
 - Yayın: Vercel
 
 ## Kurulum ve Çalıştırma
@@ -72,8 +73,9 @@ src/storage.js     Ayarlar ve skorlar (localStorage, doğrulamalı)
 src/i18n.js        Türkçe ve İngilizce metinler
 src/theme.js       Tema değiştirme
 src/theme-init.js  Kayıtlı temayı sayfa çizilmeden önce uygular
+src/sketch.js      Tahta, işaret ve çetele için el çizimi SVG yolları
 src/main.js        Hepsini sayfaya bağlar
-tests/             Kurallar, yapay zekâ ve kayıt için birim testleri
+tests/             Kurallar, yapay zekâ, kayıt ve çizim için birim testleri
 ```
 
 ## Öğrendiklerim
@@ -84,8 +86,9 @@ tests/             Kurallar, yapay zekâ ve kayıt için birim testleri
 - **Rastgeleliği test etmek.** Kolay ve orta seviye rastgele sayı kullanıyor. Testlere tohumlu bir rastgele sayı üreteci verdim; böylece her çalıştırmada aynı "rastgele" oyunlar oynanıyor ve sonuçlar tekrarlanabiliyor.
 - **Kayıtlı veriye güvenmemek.** `localStorage`'dan okunan her şey bozuk olabilir ya da elle değiştirilmiş olabilir. Her değer izin verilen değerler listesiyle karşılaştırılıyor ve sadece bilinen alanlar kaydediliyor.
 - **Metni güvenle yazmak.** Her şey `innerHTML` yerine `textContent` ve `createElement` ile yazılıyor; hiçbir metin HTML olarak çalışamıyor.
-- **CSS değişkenleriyle tema.** Renkler bir kez değişken olarak tanımlanıyor. Açık tema sadece bu değerleri değiştiriyor, sayfanın geri kalanı kendiliğinden uyuyor. Küçük bir betik kayıtlı temayı sayfa çizilmeden önce uyguluyor; yanlış temanın bir an görünmesi engelleniyor.
-- **SVG ile çizim.** Puan getiren çizgiler tahtanın üstündeki SVG çizgileri. SVG koordinatlarını hücre başına 1 birim yapınca hesap basitleşti: bir hücrenin merkezi sadece `sütun + 0.5, satır + 0.5`.
+- **CSS değişkenleriyle tema.** Renkler bir kez değişken olarak tanımlanıyor. Kara tahta teması sadece bu değerleri değiştiriyor, sayfanın geri kalanı kendiliğinden uyuyor. Küçük bir betik kayıtlı temayı sayfa çizilmeden önce uyguluyor; yanlış temanın bir an görünmesi engelleniyor.
+- **SVG ile çizim.** Tahta ve üstündeki her şey SVG yolu. Her hücreye SVG koordinatlarında sabit bir boyut verince hesap basitleşti: bir hücrenin merkezi sadece `(sütun + 0.5) × hücre boyutu`. Tohumlu bir rastgele sayı üreteci çizgileri büküyor; böylece ekran yenilenince şekil aynı kalıyor, sonraki oyunda farklı çiziliyor.
+- **Çizgiyi canlandırmak.** `pathLength="1"` verince CSS animasyonu, gerçek uzunluğunu ölçmeden her yolu `stroke-dashoffset` ile çizebiliyor.
 - **Erişilebilirlik ayrıntıları.** `disabled` ile `aria-disabled` arasındaki farkı öğrendim: `disabled` olan buton klavye odağını kaybediyor. Oyuncunun tahtadaki yerini korumak için `aria-disabled` kullandım.
 
 ## Lisans

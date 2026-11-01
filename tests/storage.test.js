@@ -22,7 +22,7 @@ test('kayıt yoksa varsayılan ayarlar gelir', () => {
     opponent: 'computer',
     level: 'medium',
     lang: 'en',
-    theme: 'dark',
+    theme: 'light',
     scores: {},
   });
 });
@@ -46,7 +46,7 @@ test('bozuk ya da geçersiz kayıt varsayılana döner', () => {
   assert.deepEqual(settings.scores, { '3-human': { X: 0, O: 0, draws: 0 } });
   assert.equal(settings.size, 3);
   assert.equal(settings.level, 'medium');
-  assert.equal(settings.theme, 'dark');
+  assert.equal(settings.theme, 'light');
 
   assert.equal(loadSettings(fakeStorage({ [STORAGE_KEY]: '42' })).opponent, 'computer');
 });

@@ -29,20 +29,21 @@ A tic-tac-toe game in plain HTML, CSS and JavaScript. Play the classic 3×3 game
   - Live announcements of turns and results.
   - Respects the "reduce motion" system setting.
 - **An address for every mode:** [/bilgisayara-karsi](https://tictactoe.miracdeprem.com/bilgisayara-karsi), [/iki-kisilik](https://tictactoe.miracdeprem.com/iki-kisilik), [/zor-seviye](https://tictactoe.miracdeprem.com/zor-seviye), [/4x4](https://tictactoe.miracdeprem.com/4x4) and [/5x5](https://tictactoe.miracdeprem.com/5x5) open the game in that mode, in Turkish or English (`?lang=en`).
-- **Turkish and English**, with a **dark and light theme** that match my [portfolio](https://www.miracdeprem.com).
-- **Responsive:** two columns on desktop, a single column on phones.
+- **Turkish and English**, with two looks: a **squared notebook and ballpoint pen**, or a **chalkboard and chalk**.
+- **Drawn by hand:** the board, X and O, the winning line and the tally marks in the score are SVG paths that look hand-drawn, and each mark is drawn stroke by stroke.
+- **Responsive:** three columns on desktop, a single column on phones.
 - **Feedback:** a small button opens a form (name optional, email or phone, message) that sends straight to me through my portfolio site.
 
 ## Screenshots
 
-| 4×4 scoring mode | Light theme, 5×5 | Phone |
+| 4×4 scoring mode | Chalkboard, 5×5 | Phone |
 |---|---|---|
-| ![4×4 board with scored lines](docs/screenshot-scoring.png) | ![Light theme in Turkish on a 5×5 board](docs/screenshot-light.png) | ![Phone layout](docs/screenshot-mobile.png) |
+| ![4×4 board with scored lines](docs/screenshot-scoring.png) | ![Chalkboard theme in Turkish on a 5×5 board](docs/screenshot-chalkboard.png) | ![Phone layout](docs/screenshot-mobile.png) |
 
 ## Tech Stack
 
 - HTML, CSS, JavaScript (ES modules, no framework, no build step)
-- Node.js built-in test runner (`node --test`), 22 unit tests
+- Node.js built-in test runner (`node --test`), 42 unit tests
 - Hosted on Vercel
 
 ## Installation
@@ -72,8 +73,9 @@ src/storage.js     Settings and scores in localStorage, with validation
 src/i18n.js        Turkish and English texts
 src/theme.js       Theme switching
 src/theme-init.js  Applies the saved theme before the first paint
+src/sketch.js      Hand-drawn SVG paths for the board, marks and tally
 src/main.js        Connects everything to the page
-tests/             Unit tests for rules, AI and storage
+tests/             Unit tests for rules, AI, storage and drawing
 ```
 
 ## What I Learned
@@ -84,8 +86,9 @@ tests/             Unit tests for rules, AI and storage
 - **Testing randomness.** The easy and medium levels use random numbers. I passed a seeded random number generator into the tests, so the same "random" games are played every time and the results are repeatable.
 - **Not trusting saved data.** Anything read from `localStorage` can be broken or edited by hand. Every value is checked against a list of allowed values, and only known fields are saved.
 - **Writing text safely.** Everything is written with `textContent` and `createElement`, never `innerHTML`, so no text can ever run as HTML.
-- **CSS variables for theming.** Colors are defined once as variables. The light theme only changes their values, and the rest of the page follows. A tiny script applies the saved theme before the page is drawn, so there is no flash of the wrong theme.
-- **Drawing with SVG.** Scored lines are SVG lines on top of the board. Setting the SVG coordinates to one unit per cell made the math simple: the center of a cell is just `column + 0.5, row + 0.5`.
+- **CSS variables for theming.** Colors are defined once as variables. The chalkboard theme only changes their values, and the rest of the page follows. A tiny script applies the saved theme before the page is drawn, so there is no flash of the wrong theme.
+- **Drawing with SVG.** The board and everything on it are SVG paths. Giving each cell a fixed size in SVG coordinates made the math simple: the center of a cell is just `(column + 0.5) × cell size`. A seeded random generator bends the lines, so a shape stays the same when the screen redraws but differs in the next game.
+- **Animating a stroke.** Setting `pathLength="1"` lets a CSS animation draw any path with `stroke-dashoffset` without measuring its real length.
 - **Accessibility details.** I learned the difference between `disabled` and `aria-disabled`: a disabled button loses keyboard focus, so I used `aria-disabled` to keep the player's place on the board.
 
 ## License
