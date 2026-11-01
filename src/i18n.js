@@ -34,8 +34,6 @@ export const MESSAGES = {
     themeChalkboard: 'Kara tahta',
     themeNotebook: 'Defter',
     language: 'Dil',
-    portfolio: 'Portfolyo',
-    source: 'Kaynak kodu',
     feedback: 'Geri bildirim',
     feedbackTitle: 'Geri bildirim gönder',
     feedbackIntro: 'Bir hata mı buldun, bir fikrin mi var? Birkaç kelime yeter.',
@@ -51,8 +49,6 @@ export const MESSAGES = {
     feedbackNeedMessage: 'Mesaj en az 5 karakter olmalı.',
     feedbackTooMany: 'Çok hızlı gönderildi. Bir dakika sonra tekrar dene.',
     feedbackFailed: 'Gönderilemedi. Biraz sonra tekrar dene.',
-    jsProjects: 'Projelerim',
-    otherProjects: 'Diğer projelerim',
   },
   en: {
     tagline: 'Classic 3×3, or keep making three in a row until the board fills up.',
@@ -88,8 +84,6 @@ export const MESSAGES = {
     themeChalkboard: 'Chalkboard',
     themeNotebook: 'Notebook',
     language: 'Language',
-    portfolio: 'Portfolio',
-    source: 'Source code',
     feedback: 'Feedback',
     feedbackTitle: 'Send feedback',
     feedbackIntro: 'Found a bug or have an idea? A few words are enough.',
@@ -105,8 +99,6 @@ export const MESSAGES = {
     feedbackNeedMessage: 'The message needs at least 5 characters.',
     feedbackTooMany: 'Too many messages. Try again in a minute.',
     feedbackFailed: 'Could not send. Please try again later.',
-    jsProjects: 'My projects',
-    otherProjects: 'My other projects',
   },
 };
 
