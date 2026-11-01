@@ -43,7 +43,7 @@ A tic-tac-toe game in plain HTML, CSS and JavaScript. Play the classic 3×3 game
 ## Tech Stack
 
 - HTML, CSS, JavaScript (ES modules, no framework, no build step)
-- Node.js built-in test runner (`node --test`), 42 unit tests
+- Node.js built-in test runner (`node --test`), 43 unit tests
 - Hosted on Vercel
 
 ## Installation

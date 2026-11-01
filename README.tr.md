@@ -43,7 +43,7 @@ Sade HTML, CSS ve JavaScript ile yazılmış bir XOX (tic-tac-toe) oyunu. Klasik
 ## Kullanılan Teknolojiler
 
 - HTML, CSS, JavaScript (ES modülleri, framework yok, derleme adımı yok)
-- Node.js'in yerleşik test aracı (`node --test`), 42 birim testi
+- Node.js'in yerleşik test aracı (`node --test`), 43 birim testi
 - Yayın: Vercel
 
 ## Kurulum ve Çalıştırma
